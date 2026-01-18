@@ -1,12 +1,14 @@
 import { Logger, NotFoundException } from '@nestjs/common';
 import {
-  FilterQuery,
   Model,
   Types,
   UpdateQuery,
   SaveOptions,
   Connection,
 } from 'mongoose';
+
+import { Filter } from 'mongodb';
+
 import { AbstractDocument } from './abstract.schema';
 
 export abstract class AbstractRepository<TDocument extends AbstractDocument> {
@@ -30,7 +32,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
     ).toJSON() as unknown as TDocument;
   }
 
-  async findOne(filterQuery: FilterQuery<TDocument>): Promise<TDocument> {
+  async findOne(filterQuery: Filter<TDocument>): Promise<TDocument> {
     const document = await this.model.findOne(filterQuery, {}, { lean: true });
 
     if (!document) {
@@ -42,7 +44,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   }
 
   async findOneAndUpdate(
-    filterQuery: FilterQuery<TDocument>,
+    filterQuery: Filter<TDocument>,
     update: UpdateQuery<TDocument>,
   ) {
     const document = await this.model.findOneAndUpdate(filterQuery, update, {
@@ -59,7 +61,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
   }
 
   async upsert(
-    filterQuery: FilterQuery<TDocument>,
+    filterQuery: Filter<TDocument>,
     document: Partial<TDocument>,
   ) {
     return this.model.findOneAndUpdate(filterQuery, document, {
@@ -69,7 +71,7 @@ export abstract class AbstractRepository<TDocument extends AbstractDocument> {
     });
   }
 
-  async find(filterQuery: FilterQuery<TDocument>) {
+  async find(filterQuery: Filter<TDocument>) {
     return this.model.find(filterQuery, {}, { lean: true });
   }
 
