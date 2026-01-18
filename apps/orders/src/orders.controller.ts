@@ -10,4 +10,9 @@ export class OrdersController {
   async createOrder(@Body() request: CreateOrderDto){
      return this.ordersService.createOrder(request)
   }
+
+  @Get()
+  async getOrders(){
+     return this.ordersService.getOrders()
+  }
 }
